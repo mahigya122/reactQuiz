@@ -4,7 +4,9 @@ interface Props {
   isAnswered: boolean;
 }
 
-function Progress({ index, total, isAnswered }: Props) {
+function Progress({ index, total, isAnswered }: Props) {                       // we can also use HTML <progress> Tag <label for="file">Downloading progress:</label> <progress id="file" value="32" max="100"> 32% </progress> but it will be difficult to style it and make it look good, so we will use a custom div based progress bar
+
+
   const progressPercent = ((index + (isAnswered ? 1 : 0)) / total) * 100;
 
   return (
