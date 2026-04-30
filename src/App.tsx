@@ -26,9 +26,6 @@ function App() {
   const [timeLeft, setTimeLeft] = useState(420); // 7 min
   const [timeOver, setTimeOver] = useState(false);
 
-  // for progress bar
-  const [answeredQuestions, setAnsweredQuestions] = useState<number[]>([]);
-
   // FETCH QUESTIONS 
   const fetchQuestions = () => {
     setStatus("loading");
@@ -53,6 +50,11 @@ function App() {
 
   // START QUIZ 
   const handleStart = () => {
+    setIndex(0);
+    setSelected(null);
+    setScore(0);
+    setTimeLeft(420);
+    setTimeOver(false);
     setStatus("active");
   };
 
@@ -84,6 +86,11 @@ function App() {
     setScore(0);
     setTimeLeft(420);
     setTimeOver(false);
+    setStatus("ready");
+  };
+
+  // GO BACK TO START SCREEN
+  const goToStartScreen = () => {
     setStatus("ready");
   };
 
@@ -137,6 +144,7 @@ function App() {
       setTimeLeft={setTimeLeft}
       timeOver={timeOver}
       setTimeOver={setTimeOver}
+      goToStartScreen={goToStartScreen}
     />
   );
 }

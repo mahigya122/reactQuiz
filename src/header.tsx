@@ -3,9 +3,10 @@ interface Props {
   onRestart?: () => void;
   index?: number;
   total?: number;
+  onTitleClick?: () => void;  // Callback when clicking the title
 }
 
-function Header({ title = "Quiz App", index, total }: Props) {
+function Header({ title = "Quiz App", index, total, onTitleClick }: Props) {
     {/*//It calculates how far the user is in the quiz (in %)*/}
   const progressPercentage = index !== undefined && total !== undefined    //Prevents errors if props are missing
     ? Math.round((index / total) * 100)         
@@ -34,17 +35,28 @@ function Header({ title = "Quiz App", index, total }: Props) {
         height: '70px'
       }}>
         {/* TITLE - LEFT */}
-        <h1 style={{
-          fontSize: '20px',
-          fontWeight: 'bold',
-          letterSpacing: '0.05em',
-          background: 'linear-gradient(to right, #06b6d4, #a78bfa)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-          margin: 0,
-          flex: 1
-        }}>
+        <h1 
+          onClick={onTitleClick}  // Go to start screen when clicked
+          style={{
+            fontSize: '20px',
+            fontWeight: 'bold',
+            letterSpacing: '0.05em',
+            background: 'linear-gradient(to right, #06b6d4, #a78bfa)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            margin: 0,
+            flex: 1,
+            cursor: onTitleClick ? 'pointer' : 'default',  // Show hand cursor if clickable
+            transition: 'opacity 0.2s'
+          }}
+          onMouseEnter={(e) => {
+            if (onTitleClick) (e.currentTarget as HTMLHeadingElement).style.opacity = '0.8';
+          }}
+          onMouseLeave={(e) => {
+            if (onTitleClick) (e.currentTarget as HTMLHeadingElement).style.opacity = '1';
+          }}
+        >
           {title}
         </h1>
 
@@ -53,7 +65,7 @@ function Header({ title = "Quiz App", index, total }: Props) {
           <div style={{
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'flex-end',
+            alignItems: 'flex-end',     // to place it at the right end of the header
             gap: '2px',
             flex: 1
           }}>

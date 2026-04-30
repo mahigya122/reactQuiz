@@ -1,11 +1,8 @@
 interface Props {
-  score: number;
   timeLeft: number;
-  total: number;
-  index: number;
 }
 
-function Footer({ score, timeLeft, total, index }: Props) {
+function Footer({ timeLeft }: Props) {
   const minutes = Math.floor(timeLeft / 60);
   const seconds = (timeLeft % 60).toString().padStart(2, "0");
   const isLowTime = timeLeft < 60;
@@ -25,17 +22,13 @@ function Footer({ score, timeLeft, total, index }: Props) {
       <div style={{
         maxWidth: '1536px',
         margin: '0 auto',
-        display: 'flex',
-        justifyContent: 'space-around',
+        display: 'flex-end',          // to align content to the right
+        justifyContent: 'space-between',
+        marginRight: '24px',
         alignItems: 'center',
         padding: '16px 24px',
         fontSize: '14px'
       }}>
-        {/* SCORE */}
-        <div style={{textAlign: 'right'}}>
-          <p style={{color: '#94a3b8', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Score</p>
-          <p style={{fontSize: '20px', fontWeight: 'bold', color: '#06b6d4'}}>{score} / {total}</p>
-        </div>
 
         {/* TIMER */}
         <div style={{textAlign: 'center'}}>

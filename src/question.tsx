@@ -25,6 +25,8 @@ interface Props {
   setTimeLeft: (t: number | ((prev: number) => number)) => void;
   timeOver: boolean;
   setTimeOver: (v: boolean) => void;
+
+  goToStartScreen: () => void;
 }
 
 function Question({
@@ -42,6 +44,7 @@ function Question({
   setTimeLeft,
   timeOver,
   setTimeOver,
+  goToStartScreen,
 }: Props) {
   const correct = question.correctIndex;
   const isAnswered = selected !== null;
@@ -69,7 +72,7 @@ function Question({
         justifyContent: 'center',
         padding: '20px'
       }}>
-        <Header onRestart={restartQuiz} index={index} total={total} />
+        <Header onRestart={restartQuiz} index={index} total={total} onTitleClick={goToStartScreen} />
 
         <div style={{textAlign: 'center'}}>
           <h1 style={{
@@ -146,7 +149,7 @@ function Question({
     }}>
 
       {/* HEADER */}
-      <Header onRestart={restartQuiz} index={index} total={total} />
+      <Header onRestart={restartQuiz} index={index} total={total} onTitleClick={goToStartScreen} />
 
       <div style={{
         paddingTop: '112px',
@@ -169,8 +172,7 @@ function Question({
           width: '100%',
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'flex-end',
-          gap: '20px'               // gap between progress and question container, and question container and next button
+          gap: '30px'                       //Gap between question card and score/next button row:
         }}>
           {/* QUESTION CONTAINER */}
           <div style={{
@@ -178,7 +180,7 @@ function Question({
             background: 'linear-gradient(to bottom right, #1e293b, #0f172a)',
             borderRadius: '12px',
             padding: '32px',
-            marginTop: "20px",    // gap between progress and question container
+            marginTop: "20px",
             boxShadow: '0 20px 25px rgba(0,0,0,0.3)',
             border: '1px solid #334155'
           }}>
@@ -217,21 +219,49 @@ function Question({
 )}
           </div>
 
-          {/* NEXT BUTTON */}
-          <NextButton
-            isAnswered={isAnswered}
-            isLastQuestion={index === total - 1}
-            onNext={onNext}
-          />
+          {/* SCORE AND BUTTON ROW */}
+          <div style={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'space-between',  // Puts Score on left, Next button on right
+            alignItems: 'center',              // Centers both Score and Next button vertically (this aligns them!)
+            gap: '50px'                        // Space between Score section and Next button
+          }}>
+            {/* SCORE - LEFT */}
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',          // Stack "Score" text and number vertically
+              alignItems: 'flex-start',        // Align text to the left
+              gap: '0px'                       // Small space between "Score" label and the number (0/15)
+            }}>
+              <p style={{
+                fontSize: '12px',
+                color: '#94a3b8',
+                margin: 0,
+                marginBottom: '0px'            // Spacing between "Score" label and the number below it
+              }}>Score</p>
+
+              <p style={{
+                fontSize: '24px',
+                fontWeight: 'bold',
+                color: '#06b6d4',
+                margin: 0
+              }}>{score} / {total}</p>
+            </div>
+
+            {/* NEXT BUTTON - RIGHT */}
+            <NextButton
+              isAnswered={isAnswered}
+              isLastQuestion={index === total - 1}
+              onNext={onNext}
+            />
+          </div>
         </div>
       </div>
 
       {/* FOOTER */}
       <Footer
-        score={score}
         timeLeft={timeLeft}
-        total={total}
-        index={index}
       />
 
       {/* TIMER (hidden logic component - only one timer running) */}

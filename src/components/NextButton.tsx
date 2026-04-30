@@ -8,25 +8,21 @@ function NextButton({ isAnswered, isLastQuestion, onNext }: Props) {
   if (!isAnswered) return null;
 
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'flex-end',
-      marginTop: '24px'
-    }}>
-      <button
-        onClick={onNext}
-        style={{
-          padding: '12px 40px',
-          borderRadius: '8px',
-          fontWeight: 'bold',
-          fontSize: '16px',
-          color: 'white',
-          border: 'none',
-          background: 'linear-gradient(to right, #06b6d4, #3b82f6)',
-          boxShadow: '0 4px 6px rgba(0,0,0,0.2)',
-          cursor: 'pointer',
-          transition: 'all 0.2s'
-        }}
+    <button
+      onClick={onNext}
+      style={{
+        padding: '12px 40px',
+        borderRadius: '8px',
+        fontWeight: 'bold',
+        fontSize: '16px',
+        color: 'white',
+        border: 'none',
+        background: 'linear-gradient(to right, #06b6d4, #3b82f6)',
+        boxShadow: '0 4px 6px rgba(0,0,0,0.2)',
+        cursor: 'pointer',
+        transition: 'all 0.2s',
+        whiteSpace: 'nowrap'
+      }}
 
         onMouseEnter={(e) => {
           (e.currentTarget as HTMLButtonElement).style.background =
@@ -41,8 +37,7 @@ function NextButton({ isAnswered, isLastQuestion, onNext }: Props) {
       >
         {isLastQuestion ? "Finish Quiz 🎉" : "Next →"}
       </button>
-    </div>
-  );
-}
+    );
+  }
 
 export default NextButton;
