@@ -32,15 +32,9 @@ function Footer({ score, timeLeft, total, index }: Props) {
         fontSize: '14px'
       }}>
         {/* SCORE */}
-        <div style={{textAlign: 'center'}}>
+        <div style={{textAlign: 'right'}}>
           <p style={{color: '#94a3b8', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Score</p>
           <p style={{fontSize: '20px', fontWeight: 'bold', color: '#06b6d4'}}>{score} / {total}</p>
-        </div>
-
-        {/* PROGRESS */}
-        <div style={{textAlign: 'center'}}>
-          <p style={{color: '#94a3b8', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em'}}>Progress</p>
-          <p style={{fontSize: '20px', fontWeight: 'bold', color: '#a78bfa'}}>Q {index + 1} of {total}</p>
         </div>
 
         {/* TIMER */}

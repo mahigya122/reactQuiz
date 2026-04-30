@@ -26,6 +26,9 @@ function App() {
   const [timeLeft, setTimeLeft] = useState(420); // 7 min
   const [timeOver, setTimeOver] = useState(false);
 
+  // for progress bar
+  const [answeredQuestions, setAnsweredQuestions] = useState<number[]>([]);
+
   // FETCH QUESTIONS 
   const fetchQuestions = () => {
     setStatus("loading");

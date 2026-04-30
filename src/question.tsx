@@ -69,7 +69,7 @@ function Question({
         justifyContent: 'center',
         padding: '20px'
       }}>
-        <Header onRestart={restartQuiz} />
+        <Header onRestart={restartQuiz} index={index} total={total} />
 
         <div style={{textAlign: 'center'}}>
           <h1 style={{
@@ -146,9 +146,8 @@ function Question({
     }}>
 
       {/* HEADER */}
-      <Header onRestart={restartQuiz} />
+      <Header onRestart={restartQuiz} index={index} total={total} />
 
-      {/* MAIN CONTENT */}
       <div style={{
         paddingTop: '112px',
         paddingBottom: '112px',
@@ -163,21 +162,29 @@ function Question({
       }}>
 
         {/* PROGRESS */}
-        <Progress index={index} total={total} />
+        <Progress index={index} total={total} isAnswered={isAnswered} />
 
-        {/* QUESTION CONTAINER */}
+        {/* QUESTION AND BUTTON WRAPPER */}
         <div style={{
           width: '100%',
-          background: 'linear-gradient(to bottom right, #1e293b, #0f172a)',
-          borderRadius: '12px',
-          padding: '32px',
-          marginBottom: '32px',
-          boxShadow: '0 20px 25px rgba(0,0,0,0.3)',
-          border: '1px solid #334155'
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-end',
+          gap: '20px'               // gap between progress and question container, and question container and next button
         }}>
+          {/* QUESTION CONTAINER */}
+          <div style={{
+            width: '100%',
+            background: 'linear-gradient(to bottom right, #1e293b, #0f172a)',
+            borderRadius: '12px',
+            padding: '32px',
+            marginTop: "20px",    // gap between progress and question container
+            boxShadow: '0 20px 25px rgba(0,0,0,0.3)',
+            border: '1px solid #334155'
+          }}>
           {/* QUESTION TEXT */}
           <h2 style={{
-            fontSize: '20px',
+            fontSize: '25px',
             fontWeight: 'bold',
             marginBottom: '32px',
             textAlign: 'center',
@@ -208,14 +215,15 @@ function Question({
         </p>
      )
 )}
-        </div>
+          </div>
 
-        {/* NEXT BUTTON */}
-        <NextButton
-          isAnswered={isAnswered}
-          isLastQuestion={index === total - 1}
-          onNext={onNext}
-        />
+          {/* NEXT BUTTON */}
+          <NextButton
+            isAnswered={isAnswered}
+            isLastQuestion={index === total - 1}
+            onNext={onNext}
+          />
+        </div>
       </div>
 
       {/* FOOTER */}

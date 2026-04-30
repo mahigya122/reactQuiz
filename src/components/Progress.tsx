@@ -1,33 +1,29 @@
 interface Props {
   index: number;
   total: number;
+  isAnswered: boolean;
 }
 
-function Progress({ index, total }: Props) {
-  const progressPercent = ((index + 1) / total) * 100;
+function Progress({ index, total, isAnswered }: Props) {
+  const progressPercent = ((index + (isAnswered ? 1 : 0)) / total) * 100;
 
   return (
-    <div className="mb-4">
-
-      {/* TEXT PROGRESS */}
-      <div className="flex justify-between text-sm text-gray-300 mb-2">
-        <p>
-          Question {index + 1} / {total}
-        </p>
-
-        <p>{Math.round(progressPercent)}%</p>
+    <div style={{ width: '100%', marginBottom: '24px' }}>
+      <div style={{
+        width: '100%',
+        height: '8px',
+        background: '#334155',
+        borderRadius: '9999px',
+        overflow: 'hidden'
+      }}>
+        <div style={{
+          height: '100%',
+          width: `${progressPercent}%`,
+          background: 'linear-gradient(to right, #4ade80, #22c55e)',
+          boxShadow: '0 0 8px rgba(34,197,94,0.6)',
+          transition: 'width 0.3s ease-in-out'
+        }} />
       </div>
-
-      {/* PROGRESS BAR BACKGROUND */}
-      <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
-
-        {/* FILLED BAR */}
-        <div
-          className="h-full bg-green-500 transition-all duration-300"
-          style={{ width: `${progressPercent}%` }}
-        />
-      </div>
-
     </div>
   );
 }
