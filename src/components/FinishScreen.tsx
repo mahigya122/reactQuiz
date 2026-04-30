@@ -7,19 +7,14 @@ interface Props {
 }
 
 function FinishScreen({ score, total, onRestart }: Props) {
-  const percentage = (score / total) * 100;
+  const percentage = total === 0 ? 0 : (score / total) * 100;
 
-  let message = "";
-
-  if (percentage === 100) {
-    message = "🔥 Perfect Score!";
-  } else if (percentage >= 70) {
-    message = "🎉 Great Job!";
-  } else if (percentage >= 40) {
-    message = "👍 Not Bad!";
-  } else {
-    message = "📚 Keep Practicing!";
-  }
+  const getMessage = () => {
+    if (percentage === 100) return "🔥 Perfect Score!";
+    if (percentage >= 70) return "🎉 Great Job!";
+    if (percentage >= 40) return "👍 Not Bad!";
+    return "📚 Keep Practicing!";
+  };
 
   return (
     <div
@@ -52,7 +47,7 @@ function FinishScreen({ score, total, onRestart }: Props) {
           style={{
             fontSize: "48px",
             fontWeight: "bold",
-            marginBottom: "8px",
+            marginBottom: "12px",
             background:
               "linear-gradient(to right, #f97316, #ef4444, #a78bfa)",
             WebkitBackgroundClip: "text",
@@ -62,23 +57,21 @@ function FinishScreen({ score, total, onRestart }: Props) {
           Quiz Completed 🎯
         </h1>
 
-        {/* SCORE BOX */}
+        {/* SCORE CARD */}
         <div
           style={{
             marginTop: "20px",
-            padding: "20px 40px",
+            padding: "28px 48px",
             borderRadius: "16px",
             background: "rgba(255,255,255,0.05)",
             border: "1px solid rgba(255,255,255,0.1)",
-            backdropFilter: "blur(10px)",
+            boxShadow: "0 10px 25px rgba(0,0,0,0.4)",
           }}
         >
-          {/* SCORE */}
-          <p style={{ fontSize: "28px", fontWeight: "bold" }}>
+          <p style={{ fontSize: "32px", fontWeight: "bold", margin: 0 }}>
             {score} / {total}
           </p>
 
-          {/* PERCENTAGE */}
           <p style={{ color: "#94a3b8", marginTop: "8px" }}>
             {Math.round(percentage)}% Correct
           </p>
@@ -89,36 +82,63 @@ function FinishScreen({ score, total, onRestart }: Props) {
           style={{
             marginTop: "24px",
             fontSize: "20px",
+            fontWeight: 500,
             color: "#34d399",
-            fontWeight: "500",
           }}
         >
-          {message}
+          {getMessage()}
         </p>
 
-        {/* STATS ROW */}
+        {/* STATS */}
         <div
           style={{
             display: "flex",
-            gap: "32px",
-            marginTop: "30px",
-            justifyContent: "center",
+            gap: "40px",
+            marginTop: "32px",
+            alignItems: "center",
           }}
         >
+          {/* CORRECT */}
           <div style={{ textAlign: "center" }}>
-            <p style={{ fontSize: "24px", fontWeight: "bold", color: "#06b6d4" }}>
+            <p
+              style={{
+                fontSize: "26px",
+                fontWeight: "bold",
+                color: "#06b6d4",
+                margin: 0,
+              }}
+            >
               {score}
             </p>
-            <p style={{ fontSize: "12px", color: "#94a3b8" }}>CORRECT</p>
+            <p style={{ fontSize: "12px", color: "#94a3b8", margin: 0 }}>
+              CORRECT
+            </p>
           </div>
 
-          <div style={{ width: "1px", background: "#475569" }}></div>
+          {/* DIVIDER */}
+          <div
+            style={{
+              width: "1px",
+              height: "40px",
+              background: "#475569",
+            }}
+          />
 
+          {/* WRONG */}
           <div style={{ textAlign: "center" }}>
-            <p style={{ fontSize: "24px", fontWeight: "bold", color: "#ef4444" }}>
+            <p
+              style={{
+                fontSize: "26px",
+                fontWeight: "bold",
+                color: "#ef4444",
+                margin: 0,
+              }}
+            >
               {total - score}
             </p>
-            <p style={{ fontSize: "12px", color: "#94a3b8" }}>WRONG</p>
+            <p style={{ fontSize: "12px", color: "#94a3b8", margin: 0 }}>
+              WRONG
+            </p>
           </div>
         </div>
 
@@ -127,22 +147,26 @@ function FinishScreen({ score, total, onRestart }: Props) {
           onClick={onRestart}
           style={{
             marginTop: "40px",
-            padding: "16px 40px",
+            padding: "16px 42px",
             background: "linear-gradient(to right, #ef4444, #f97316)",
             color: "white",
             fontWeight: "bold",
             fontSize: "18px",
             border: "none",
             borderRadius: "10px",
-            boxShadow: "0 10px 15px rgba(0,0,0,0.3)",
+            boxShadow: "0 10px 20px rgba(0,0,0,0.35)",
             cursor: "pointer",
-            transition: "transform 0.2s",
+            transition: "all 0.2s ease",
           }}
           onMouseEnter={(e) => {
-            (e.target as HTMLButtonElement).style.transform = "scale(1.05)";
+            const el = e.currentTarget;
+            el.style.transform = "scale(1.05)";
+            el.style.boxShadow = "0 15px 30px rgba(0,0,0,0.5)";
           }}
           onMouseLeave={(e) => {
-            (e.target as HTMLButtonElement).style.transform = "scale(1)";
+            const el = e.currentTarget;
+            el.style.transform = "scale(1)";
+            el.style.boxShadow = "0 10px 20px rgba(0,0,0,0.35)";
           }}
         >
           Restart Quiz ↻

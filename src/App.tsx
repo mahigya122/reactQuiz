@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 
 import StartScreen from "./startScreen";
 import Question from "./question";
@@ -12,139 +12,245 @@ interface QuestionType {
   correctIndex: number;
 }
 
+// Raw response shape from the API before we normalize it into QuestionType.
+interface ApiQuestion {
+  question: string;
+  options: string[];
+  correctOption: number;
+}
+
+type QuizStatus = "loading" | "error" | "ready" | "active" | "finished";
+
+interface QuizState {
+  questions: QuestionType[];
+  status: QuizStatus;
+  index: number;
+  selected: number | null;
+  score: number;
+  timeLeft: number;
+  timeOver: boolean;
+}
+
+type QuizAction =
+  | { type: "loading" }
+  | { type: "dataLoaded"; payload: QuestionType[] }
+  | { type: "dataFailed" }
+  | { type: "start" }
+  | { type: "answer"; payload: number }
+  | { type: "next" }
+  | { type: "restart" }
+  | { type: "goToStartScreen" }
+  | { type: "setTimeLeft"; payload: number | ((prev: number) => number) }
+  | { type: "setTimeOver"; payload: boolean };
+
+const initialTimeLeft = 420;
+
+const initialState: QuizState = {
+  questions: [],
+  status: "loading",
+  index: 0,
+  selected: null,
+  score: 0,
+  timeLeft: initialTimeLeft,
+  timeOver: false,
+};
+
+function reducer(state: QuizState, action: QuizAction): QuizState {
+  switch (action.type) {
+    case "loading":
+      return {
+        ...state,
+        status: "loading",
+      };
+
+    case "dataLoaded":
+      return {
+        ...state,
+        questions: action.payload,
+        status: "ready",
+        index: 0,
+        selected: null,
+        score: 0,
+        timeLeft: initialTimeLeft,
+        timeOver: false,
+      };
+
+    case "dataFailed":
+      return {
+        ...state,
+        status: "error",
+      };
+
+    case "start":
+      return {
+        ...state,
+        status: "active",
+        index: 0,
+        selected: null,
+        score: 0,
+        timeLeft: initialTimeLeft,
+        timeOver: false,
+      };
+
+    case "answer": {
+      if (state.selected !== null || state.timeOver) return state;
+
+      const isCorrect =
+        action.payload === state.questions[state.index].correctIndex;
+
+      return {
+        ...state,
+        selected: action.payload,
+        score: isCorrect ? state.score + 1 : state.score,
+      };
+    }
+
+    case "next":
+      return {
+        ...state,
+        index:
+          state.index < state.questions.length - 1
+            ? state.index + 1
+            : state.index,
+        selected: null,
+        status:
+          state.index === state.questions.length - 1 ? "finished" : "active",
+      };
+
+    case "restart":
+      return {
+        ...state,
+        status: "ready",
+        index: 0,
+        selected: null,
+        score: 0,
+        timeLeft: initialTimeLeft,
+        timeOver: false,
+      };
+
+    case "goToStartScreen":
+      return {
+        ...state,
+        status: "ready",
+        selected: null,
+      };
+
+    case "setTimeLeft": {
+      const nextTimeLeft =
+        typeof action.payload === "function"
+          ? action.payload(state.timeLeft)
+          : action.payload;
+
+      return {
+        ...state,
+        timeLeft: nextTimeLeft,
+        timeOver: nextTimeLeft <= 0 ? true : state.timeOver,
+      };
+    }
+
+    case "setTimeOver":
+      return {
+        ...state,
+        timeOver: action.payload,
+      };
+
+    default:
+      return state;
+  }
+}
+
 function App() {
-  const [questions, setQuestions] = useState<QuestionType[]>([]);
-  const [status, setStatus] = useState<
-    "loading" | "error" | "ready" | "active" | "finished"
-  >("loading");
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-  const [index, setIndex] = useState(0);
-  const [selected, setSelected] = useState<number | null>(null);
-  const [score, setScore] = useState(0);
-
-  // for TIMER STATE
-  const [timeLeft, setTimeLeft] = useState(420); // 7 min
-  const [timeOver, setTimeOver] = useState(false);
-
-  // FETCH QUESTIONS 
+  // Fetch, normalize, and store quiz questions in the reducer state.
   const fetchQuestions = () => {
-    setStatus("loading");
+    dispatch({ type: "loading" });
 
     fetch("http://localhost:8000/questions")
       .then((res) => res.json())
       .then((data) => {
-        const mappedData = data.questions.map((q: any) => ({
+        const mappedData = (data.questions as ApiQuestion[]).map((q) => ({
           question: q.question,
           options: q.options,
-          correctIndex: q.correctOption
+          correctIndex: q.correctOption,
         }));
-        setQuestions(mappedData);
-        setStatus("ready");
+
+        dispatch({ type: "dataLoaded", payload: mappedData });
       })
-      .catch(() => setStatus("error"));
+      .catch(() => dispatch({ type: "dataFailed" }));
   };
 
+  // Load the quiz once when the app starts.
   useEffect(() => {
     fetchQuestions();
   }, []);
 
-  // START QUIZ 
+  // Small action wrappers keep the JSX clean and centralize dispatch calls.
   const handleStart = () => {
-    setIndex(0);
-    setSelected(null);
-    setScore(0);
-    setTimeLeft(420);
-    setTimeOver(false);
-    setStatus("active");
+    dispatch({ type: "start" });
   };
 
-  // ANSWER QUESTION
   const handleAnswer = (i: number) => {
-    if (selected !== null) return;
-
-    setSelected(i);
-
-    if (i === questions[index].correctIndex) {
-      setScore((s) => s + 1);
-    }
+    dispatch({ type: "answer", payload: i });
   };
 
-  // NEXT QUESTION
   const handleNext = () => {
-    if (index < questions.length - 1) {
-      setIndex((i) => i + 1);
-      setSelected(null);
-    } else {
-      setStatus("finished");
-    }
+    dispatch({ type: "next" });
   };
 
-  // RESTART QUIZ
   const restartQuiz = () => {
-    setIndex(0);
-    setSelected(null);
-    setScore(0);
-    setTimeLeft(420);
-    setTimeOver(false);
-    setStatus("ready");
+    dispatch({ type: "restart" });
   };
 
-  // GO BACK TO START SCREEN
   const goToStartScreen = () => {
-    setStatus("ready");
+    dispatch({ type: "goToStartScreen" });
   };
 
-  //to render different screens based on status
-  if (status === "loading") {
-  return <Loader message="Fetching questions..." />;
-}
+  const setTimeLeft = (value: number | ((prev: number) => number)) => {
+    dispatch({ type: "setTimeLeft", payload: value });
+  };
 
-  if (status === "error") {
-    return (
-      <Error
-        message="Failed to load questions."
-        onRetry={fetchQuestions}
-      />
-    );
+  const setTimeOver = (value: boolean) => {
+    dispatch({ type: "setTimeOver", payload: value });
+  };
+
+  if (state.status === "loading") {
+    return <Loader message="Fetching questions..." />;
   }
 
-  if (status === "ready") {
-    return (
-      <StartScreen
-        total={questions.length}
-        onStart={handleStart}
-      />
-    );
+  if (state.status === "error") {
+    return <Error message="Failed to load questions." onRetry={fetchQuestions} />;
   }
 
-  if (status === "finished") {
+  if (state.status === "ready") {
+    return <StartScreen total={state.questions.length} onStart={handleStart} />;
+  }
+
+  if (state.status === "finished") {
     return (
       <FinishScreen
-        score={score}
-        total={questions.length}
+        score={state.score}
+        total={state.questions.length}
         onRestart={restartQuiz}
       />
     );
   }
 
-  // ACTIVE QUIZ 
   return (
     <Question
-      question={questions[index]}
-      index={index}
-      total={questions.length}
-      selected={selected}
+      question={state.questions[state.index]}
+      index={state.index}
+      total={state.questions.length}
+      selected={state.selected}
       onAnswer={handleAnswer}
       onNext={handleNext}
-      score={score}
-      setIndex={setIndex}
-      setSelected={setSelected}
-      setScore={setScore}
-      timeLeft={timeLeft}
+      score={state.score}
+      timeLeft={state.timeLeft}
       setTimeLeft={setTimeLeft}
-      timeOver={timeOver}
+      timeOver={state.timeOver}
       setTimeOver={setTimeOver}
-      goToStartScreen={goToStartScreen}
+      onRestart={restartQuiz}
+      onTitleClick={goToStartScreen}
     />
   );
 }

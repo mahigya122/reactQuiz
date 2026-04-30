@@ -11,18 +11,18 @@ function Timer({ timeLeft, setTimeLeft, timeOver, setTimeOver }: Props) {
   useEffect(() => {
     if (timeOver) return;
 
-    const timer = setInterval(() => {
+    const interval = setInterval(() => {
       setTimeLeft((t: number) => {
         if (t <= 1) {
           setTimeOver(true);
-          clearInterval(timer);
+          clearInterval(interval);
           return 0;
         }
         return t - 1;
       });
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => clearInterval(interval);
   }, [timeOver, setTimeLeft, setTimeOver]);
 
   return (

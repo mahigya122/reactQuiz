@@ -37,12 +37,12 @@ function Options({ options, correctIndex, selected, onAnswer }: Props) {
             }}
             onMouseEnter={(e) => {
               if (!isAnswered) {
-                (e.target as HTMLButtonElement).style.background = '#334155';
+                (e.currentTarget as HTMLButtonElement).style.background = '#334155';
               }
             }}
             onMouseLeave={(e) => {
               if (!isAnswered) {
-                (e.target as HTMLButtonElement).style.background = '#1e293b';
+                (e.currentTarget as HTMLButtonElement).style.background = '#1e293b';
               }
             }}
           >

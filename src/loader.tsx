@@ -11,7 +11,7 @@ function Loader({ message }: Props) {
 
       {/* TEXT */}
       <p className="text-gray-400">
-        {message || "Loading..."}
+        {message ?? "Loading..."}   {/* Nullish Coalescing: it checks if message is null or undefined, if it is then it will show "Loading..." otherwise it will show the message */}
       </p>
 
     </div>
