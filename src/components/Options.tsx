@@ -9,26 +9,44 @@ function Options({ options, correctIndex, selected, onAnswer }: Props) {
   const isAnswered = selected !== null;
 
   return (
-    <div className="space-y-3">
-      {options.map((opt, i) => {
-        let bg = "bg-gray-800";
-
-        if (isAnswered) {
-          if (i === correctIndex) {
-            bg = "bg-green-600"; // correct answer
-          } else if (i === selected) {
-            bg = "bg-red-600"; // wrong selected
-          }
-        }
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
+      {options.map((option: string, i: number) => {
+        const isSelected = selected === i;
+        const isCorrect = i === correctIndex;
 
         return (
           <button
             key={i}
             onClick={() => onAnswer(i)}
             disabled={isAnswered}
-            className={`w-full p-3 rounded transition ${bg}`}
+            style={{
+              width: '100%',
+              textAlign: 'left',
+              padding: '12px 16px',
+              borderRadius: '8px',
+              border: '1px solid',
+              transition: 'all 0.2s',
+              cursor: isAnswered ? 'not-allowed' : 'pointer',
+              ...(isAnswered
+                ? isCorrect
+                  ? { background: 'rgba(16, 185, 129, 0.2)', borderColor: '#10b981', color: '#86efac' }
+                  : isSelected
+                  ? { background: 'rgba(239, 68, 68, 0.2)', borderColor: '#ef4444', color: '#fca5a5' }
+                  : { opacity: 0.6, background: '#334155', borderColor: '#475569', color: '#cbd5e1' }
+                : { background: '#1e293b', borderColor: '#475569', color: '#e2e8f0' })
+            }}
+            onMouseEnter={(e) => {
+              if (!isAnswered) {
+                (e.target as HTMLButtonElement).style.background = '#334155';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isAnswered) {
+                (e.target as HTMLButtonElement).style.background = '#1e293b';
+              }
+            }}
           >
-            {opt}
+            {option}
           </button>
         );
       })}

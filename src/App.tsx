@@ -9,7 +9,7 @@ import Loader from "./loader";
 interface QuestionType {
   question: string;
   options: string[];
-  correctOption: number;
+  correctIndex: number;
 }
 
 function App() {
@@ -59,7 +59,7 @@ function App() {
 
     setSelected(i);
 
-    if (i === questions[index].correctOption) {
+    if (i === questions[index].correctIndex) {
       setScore((s) => s + 1);
     }
   };
