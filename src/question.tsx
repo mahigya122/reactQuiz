@@ -4,46 +4,18 @@ import Options from "./components/Options";
 import NextButton from "./components/NextButton";
 import Footer from "./components/Footer";
 import Progress from "./components/Progress";
+import { useQuiz } from "./contexts/quizContext";
 
-interface QuestionData {
-  question: string;
-  options: string[];
-  correctIndex: number;
-}
+function Question() {
+  const { state, dispatch } = useQuiz();
+  const { questions, index, score, timeOver } = state;
 
-interface Props {
-  question: QuestionData;
-  index: number;
-  total: number;
-  selected: number | null;
-  onAnswer: (i: number) => void;
-  onNext: () => void;
-  score: number;
-  timeLeft: number;
-  setTimeLeft: (t: number | ((prev: number) => number)) => void;
-  timeOver: boolean;
-  setTimeOver: (v: boolean) => void;
-  onRestart: () => void;
-  onTitleClick: () => void;
-}
+  const total = questions.length;
+  const question = questions[index];
 
-function Question({
-  question,
-  index,
-  total,
-  selected,
-  onAnswer,
-  onNext,
-  score,
-  timeLeft,
-  setTimeLeft,
-  timeOver,
-  setTimeOver,
-  onRestart,
-  onTitleClick,
-}: Props) {
-  const correct = question.correctIndex;
-  const isAnswered = selected !== null;
+  if (!question) {
+    return null;
+  }
 
   if (timeOver) {
     const percentage = total === 0 ? 0 : Math.round((score / total) * 100);
@@ -58,7 +30,7 @@ function Question({
           flexDirection: "column",
         }}
       >
-        <Header index={index} total={total} onTitleClick={onTitleClick} />
+        <Header />
 
         <div
           style={{
@@ -117,7 +89,7 @@ function Question({
             </div>
 
             <button
-              onClick={onRestart}
+              onClick={() => dispatch({ type: "restart" })}
               style={{
                 padding: "12px 32px",
                 background: "linear-gradient(to right, #06b6d4, #3b82f6)",
@@ -155,7 +127,7 @@ function Question({
         flexDirection: "column",
       }}
     >
-      <Header index={index} total={total} onTitleClick={onTitleClick} />
+      <Header />
 
       <div
         style={{
@@ -171,7 +143,7 @@ function Question({
           alignItems: "center",
         }}
       >
-        <Progress index={index} total={total} isAnswered={isAnswered} />
+        <Progress />
 
         <div
           style={{
@@ -197,12 +169,7 @@ function Question({
             {question.question}
           </h2>
 
-          <Options
-            options={question.options}
-            correctIndex={correct}
-            selected={selected}
-            onAnswer={onAnswer}
-          />
+          <Options />
 
           <div
             style={{
@@ -220,24 +187,15 @@ function Question({
               </p>
             </div>
 
-            <NextButton
-              isAnswered={isAnswered}
-              isLastQuestion={index === total - 1}
-              onNext={onNext}
-            />
+            <NextButton />
           </div>
         </div>
       </div>
 
-      <Footer timeLeft={timeLeft} />
+      <Footer />
 
       <div style={{ display: "none" }}>
-        <Timer
-          timeLeft={timeLeft}
-          setTimeLeft={setTimeLeft}
-          timeOver={timeOver}
-          setTimeOver={setTimeOver}
-        />
+        <Timer />
       </div>
     </div>
   );

@@ -1,12 +1,13 @@
 import Header from "../header";
+import { useQuiz } from "../contexts/quizContext";
 
-interface Props {
-  score: number;
-  total: number;
-  onRestart: () => void;
-}
+function FinishScreen() {
+  const {
+    state: { score, questions },
+    dispatch,
+  } = useQuiz();
 
-function FinishScreen({ score, total, onRestart }: Props) {
+  const total = questions.length;
   const percentage = total === 0 ? 0 : (score / total) * 100;
 
   const getMessage = () => {
@@ -144,7 +145,7 @@ function FinishScreen({ score, total, onRestart }: Props) {
 
         {/* RESTART BUTTON */}
         <button
-          onClick={onRestart}
+          onClick={() => dispatch({ type: "restart" })}
           style={{
             marginTop: "40px",
             padding: "16px 42px",

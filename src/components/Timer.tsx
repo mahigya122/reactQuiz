@@ -1,29 +1,29 @@
 import { useEffect } from "react";
+import { useQuiz } from "../contexts/quizContext";
 
-interface Props {
-  timeLeft: number;
-  setTimeLeft: (t: number | ((prev: number) => number)) => void;
-  timeOver: boolean;
-  setTimeOver: (v: boolean) => void;
-}
+function Timer() {
+  const { state, dispatch } = useQuiz();
+  const { timeLeft, timeOver } = state;
 
-function Timer({ timeLeft, setTimeLeft, timeOver, setTimeOver }: Props) {
   useEffect(() => {
     if (timeOver) return;
 
     const interval = setInterval(() => {
-      setTimeLeft((t: number) => {
-        if (t <= 1) {
-          setTimeOver(true);
-          clearInterval(interval);
-          return 0;
-        }
-        return t - 1;
+      dispatch({
+        type: "setTimeLeft",
+        payload: (t: number) => {
+          if (t <= 1) {
+            dispatch({ type: "setTimeOver", payload: true });
+            clearInterval(interval);
+            return 0;
+          }
+          return t - 1;
+        },
       });
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [timeOver, setTimeLeft, setTimeOver]);
+  }, [timeOver, dispatch]);
 
   return (
     <p className="text-gray-300">

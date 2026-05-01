@@ -1,16 +1,15 @@
-interface Props {
-  isAnswered: boolean;
-  isLastQuestion: boolean;
-  onNext: () => void;
-}
+import { useQuiz } from "../contexts/quizContext";
 
-function NextButton({ isAnswered, isLastQuestion, onNext }: Props) {
-  // Don't show button until user answers
+function NextButton() {
+  const { state, dispatch } = useQuiz();
+  const isAnswered = state.selected !== null;
+  const isLastQuestion = state.index === state.questions.length - 1;
+
   if (!isAnswered) return null;
 
   return (
     <button
-      onClick={onNext}
+      onClick={() => dispatch({ type: "next" })}
       style={{
         padding: "12px 40px",
         borderRadius: "8px",

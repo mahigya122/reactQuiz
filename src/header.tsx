@@ -1,21 +1,15 @@
-interface Props {
-  title?: string;
-  index?: number;
-  total?: number;
-  onTitleClick?: () => void;
-}
+import { useQuiz } from "./contexts/quizContext";
 
-function Header({
-  title = "Quiz App",
-  index,
-  total,
-  onTitleClick,
-}: Props) {
-  // Calculate progress percentage
-  const progressPercentage =
-    index !== undefined && total !== undefined
-      ? Math.round((index / total) * 100)
-      : 0;
+function Header() {
+  const { state, dispatch } = useQuiz();
+  const total = state.questions.length;
+  const showProgress = state.status === "active" && total > 0;
+
+  const progressPercentage = showProgress
+    ? Math.round((state.index / total) * 100)
+    : 0;
+
+  const canReturnToStart = state.status === "active";
 
   return (
     <header
@@ -45,7 +39,11 @@ function Header({
       >
         {/* TITLE */}
         <h1
-          onClick={onTitleClick}
+          onClick={() => {
+            if (canReturnToStart) {
+              dispatch({ type: "goToStartScreen" });
+            }
+          }}
           style={{
             fontSize: "20px",
             fontWeight: "bold",
@@ -55,21 +53,21 @@ function Header({
             WebkitTextFillColor: "transparent",
             margin: 0,
             flex: 1,
-            cursor: onTitleClick ? "pointer" : "default",
+            cursor: canReturnToStart ? "pointer" : "default",
             transition: "opacity 0.2s",
           }}
           onMouseEnter={(e) => {
-            if (onTitleClick) e.currentTarget.style.opacity = "0.8";
+            if (canReturnToStart) e.currentTarget.style.opacity = "0.8";
           }}
           onMouseLeave={(e) => {
-            if (onTitleClick) e.currentTarget.style.opacity = "1";
+            if (canReturnToStart) e.currentTarget.style.opacity = "1";
           }}
         >
-          {title}
+          Quiz App
         </h1>
 
         {/* PROGRESS */}
-        {index !== undefined && total !== undefined && (
+        {showProgress && (
           <div
             style={{
               display: "flex",
@@ -104,7 +102,7 @@ function Header({
                 lineHeight: "1.2",
               }}
             >
-              Question {index + 1} of {total}
+              Question {state.index + 1} of {total}
             </p>
           </div>
         )}

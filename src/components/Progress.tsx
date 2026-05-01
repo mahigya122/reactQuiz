@@ -1,12 +1,18 @@
-interface Props {
-  index: number;
-  total: number;
-  isAnswered: boolean;
-}
+import { useQuiz } from "../contexts/quizContext";
 
-function Progress({ index, total, isAnswered }: Props) {
+function Progress() {
+  const {
+    state: { index, questions, selected },
+  } = useQuiz();
+
+  const total = questions.length;
+  const isAnswered = selected !== null;
+
+  if (total === 0) {
+    return null;
+  }
+
   const completedQuestions = index + (isAnswered ? 1 : 0);
-
   const progressPercent = (completedQuestions / total) * 100;
 
   return (

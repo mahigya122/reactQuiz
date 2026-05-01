@@ -1,11 +1,14 @@
 import Header from "./header";
+import { useQuiz } from "./contexts/quizContext";
 
-interface Props {
-  total: number;
-  onStart: () => void;
-}
+function StartScreen() {
+  const {
+    state: { questions },
+    dispatch,
+  } = useQuiz();
 
-function StartScreen({ total, onStart }: Props) {
+  const total = questions.length;
+
   return (
     <div
       style={{
@@ -158,7 +161,7 @@ function StartScreen({ total, onStart }: Props) {
 
         {/* START BUTTON */}
         <button
-          onClick={onStart}
+          onClick={() => dispatch({ type: "start" })}
           style={{
             padding: "16px 42px",
             background: "linear-gradient(to right, #06b6d4, #3b82f6)",
