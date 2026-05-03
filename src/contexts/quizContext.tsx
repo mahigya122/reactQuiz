@@ -213,4 +213,4 @@ function useQuiz() {
   return context;
 }
 
-export { QuizProvider, useQuiz };
+export { QuizProvider, useQuiz };          //QuizProvider = power source, useQuiz = safe plug socket

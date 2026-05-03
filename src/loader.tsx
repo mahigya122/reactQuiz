@@ -1,5 +1,5 @@
-interface Props {
-  message?: string;
+interface Props {                       //this defines what data your component is allowed to receive as props. message is a string ? means optional
+  message?: string;         //This component may or may not receive a message, and if it does, it must be a string
 }
 
 function Loader({ message }: Props) {

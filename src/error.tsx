@@ -1,14 +1,17 @@
+//This defines what data your component is allowed to receive.
 interface Props {
-  message?: string;
-  onRetry?: () => void;
+  message?: string;                    //message is a string, ? means it is optional
+  onRetry?: () => void;              //onRetry is a function () => void means: takes no arguments returns nothing, ? means optional
 }
 
+
+//here component is error.
 function Error({ message, onRetry }: Props) {
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-black text-white">
       
       {/* ERROR ICON */}
-      <h1 className="text-3xl mb-4 text-red-500">
+      <h1 className="text-2xl mb-4 text-red-500">
         ❌ Something went wrong
       </h1>
 
