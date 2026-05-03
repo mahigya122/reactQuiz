@@ -33,7 +33,7 @@ function Progress() {
             height: "100%",
             width: `${progressPercent}%`,
             background: "linear-gradient(to right, #4ade80, #22c55e)",
-            boxShadow: "0 0 8px rgba(34,197,94,0.6)",
+            boxShadow: "0 0 8px rgba(250,250,210,1)",
             transition: "width 0.4s ease-in-out",
           }}
         />

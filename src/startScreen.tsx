@@ -88,8 +88,8 @@ function StartScreen() {
             {total} questions
           </span>{" "}
           in just{" "}
-          <span style={{ color: "#a78bfa", fontWeight: "bold" }}>
-            7 minutes
+            <span style={{ color: "#a78bfa", fontWeight: "bold" }}>
+            5 minutes
           </span>
           . Test your React knowledge and track your performance.
         </p>
@@ -145,7 +145,7 @@ function StartScreen() {
                 margin: 0,
               }}
             >
-              7
+              5
             </p>
             <p
               style={{

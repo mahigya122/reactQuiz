@@ -3,12 +3,14 @@ import { useQuiz } from "../contexts/quizContext";
 
 function FinishScreen() {
   const {
-    state: { score, questions },
+    state: { score, questions, timeOver },
     dispatch,
   } = useQuiz();
 
   const total = questions.length;
   const percentage = total === 0 ? 0 : (score / total) * 100;
+
+  const title = timeOver ? "Time Ended ⏰" : "Quiz Completed 🎯";
 
   const getMessage = () => {
     if (percentage === 100) return "🔥 Perfect Score!";
@@ -55,7 +57,7 @@ function FinishScreen() {
             WebkitTextFillColor: "transparent",
           }}
         >
-          Quiz Completed 🎯
+          {title}
         </h1>
 
         {/* SCORE CARD */}
